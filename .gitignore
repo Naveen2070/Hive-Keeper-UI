@@ -42,3 +42,9 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# I don't do AI stuff in this learning project
+.gemini/
+.agents/
+agent.json
+*.skill
