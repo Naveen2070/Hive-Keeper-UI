@@ -1,0 +1,116 @@
+<div
+  class="relative min-h-screen flex items-center justify-center bg-slate-950 bg-grid-dots p-6 overflow-hidden selection:bg-blue-500/30">
+
+  <div
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] -z-10 animate-pulse pointer-events-none"></div>
+
+  <mat-card
+    class="keeper-card w-full max-w-[420px] !bg-slate-900/60 backdrop-blur-3xl ring-1 ring-white/10 shadow-2xl rounded-[2.5rem] overflow-hidden z-10">
+
+    @if (isLoading()) {
+      <mat-progress-bar class="absolute top-0 left-0 w-full z-20" color="primary"
+                        mode="indeterminate"></mat-progress-bar>
+    }
+
+    <!-- Header Section -->
+    <mat-card-header class="flex flex-col items-center pt-10 pb-4 px-8 text-center">
+      <div class="group relative mb-4">
+        <div
+          class="absolute inset-0 bg-blue-500/20 rounded-3xl blur-xl group-hover:bg-blue-500/40 transition-all duration-500"></div>
+        <div
+          class="relative w-16 h-16 bg-slate-800/80 border border-white/10 rounded-2xl flex items-center justify-center text-blue-400 shadow-inner transition-transform duration-300 group-hover:scale-105">
+          <mat-icon class="scale-[1.6] !w-auto !h-auto">security</mat-icon>
+        </div>
+      </div>
+
+      <mat-card-title class="text-3xl font-black text-white tracking-tight mb-2">
+        Hive <span class="text-blue-500">Keeper</span>
+      </mat-card-title>
+
+      <div
+        class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+        <span class="relative flex h-1.5 w-1.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>
+        </span>
+        <span class="text-[9px] font-mono font-bold text-blue-400 uppercase tracking-[0.2em]">Secure Node 04</span>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content class="px-8 pb-10 pt-4">
+      @if (errorMessage()) {
+        <div
+          class="mb-5 flex items-center gap-3 p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-xs animate-in fade-in zoom-in duration-300">
+          <mat-icon class="!w-4 !h-4 !text-[18px]">report_problem</mat-icon>
+          <span class="font-medium">{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="flex flex-col gap-5">
+
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[10px] font-mono uppercase tracking-[0.15em] text-slate-400 ml-1 opacity-70">Authentication
+            ID</label>
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-icon class="mr-3 text-slate-500 scale-90" matPrefix>alternate_email</mat-icon>
+            <input [readonly]="isLoading()" formControlName="email" matInput placeholder="admin@thehive.com"
+                   type="email">
+
+            @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
+              <mat-error class="text-[9px]">ID is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[10px] font-mono uppercase tracking-[0.15em] text-slate-400 ml-1 opacity-70">Secret
+            Key</label>
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-icon class="mr-3 text-slate-500 scale-90" matPrefix>fingerprint</mat-icon>
+            <input [readonly]="isLoading()" [type]="hidePassword() ? 'password' : 'text'" formControlName="password"
+                   matInput>
+
+            <button (click)="togglePasswordVisibility($event)" [disabled]="isLoading()"
+                    class="text-slate-500 hover:text-white transition-colors" mat-icon-button
+                    matSuffix type="button">
+              <mat-icon class="!text-[18px]">{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+
+            @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+              <mat-error class="text-[9px]">Key is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="flex items-center justify-end px-1 -mt-1.5">
+          <a class="text-[10px] font-bold text-blue-500 hover:text-blue-400 transition-colors uppercase tracking-wider"
+             href="#">Access
+            Recovery</a>
+        </div>
+
+        <button [disabled]="loginForm.invalid || isLoading()"
+                class="authorize-btn !bg-blue-600/90 hover:!bg-blue-600 !text-white shadow-[0_0_20px_rgba(59,130,246,0.2)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all duration-300 mt-2"
+                color="primary" mat-flat-button
+                type="submit">
+          @if (isLoading()) {
+            <span class="flex items-center gap-2 justify-center">
+              <span class="w-1.5 h-1.5 bg-current rounded-full animate-bounce"></span>
+              <span class="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:0.2s]"></span>
+              <span class="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:0.4s]"></span>
+            </span>
+          } @else {
+            Authorize Session
+          }
+        </button>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-footer class="px-8 py-5 bg-slate-950/40 border-t border-white/5 flex items-center justify-between">
+      <span
+        class="text-[9px] font-mono text-slate-500 uppercase tracking-widest opacity-60">Hive Keeper UI v1.0.4</span>
+      <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></div>
+    </mat-card-footer>
+  </mat-card>
+
+</div>

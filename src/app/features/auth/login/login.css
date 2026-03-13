@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  color-scheme: dark;
+}
+
+::ng-deep {
+  /* Fixes Card Background Conflict */
+
+  .keeper-card {
+    --mdc-elevated-card-container-color: transparent;
+    overflow: hidden;
+  }
+
+  /* Remove default Material Card Header padding to gain full control */
+
+  .mat-mdc-card-header {
+    padding: 0 !important;
+  }
+
+  /* Form Field Overrides */
+
+  .mat-mdc-form-field {
+    --mdc-outlined-text-field-container-shape: 14px;
+    --mdc-outlined-text-field-outline-color: rgba(255, 255, 255, 0.08);
+    --mdc-outlined-text-field-focus-outline-color: #3b82f6;
+    --mdc-outlined-text-field-hover-outline-color: rgba(255, 255, 255, 0.15);
+
+    /* Text colors */
+    --mdc-outlined-text-field-input-text-color: #f8fafc; /* slate-50 */
+    --mat-sys-on-surface-variant: #94a3b8; /* slate-400 */
+
+    /* Make the input background slightly darker than the card */
+    --mdc-outlined-text-field-container-color: rgba(2, 6, 23, 0.4); /* slate-950/40 */
+
+    width: 100%;
+  }
+
+  /* Reduce internal vertical density of the outlined input */
+
+  .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    min-height: 52px !important;
+  }
+
+  /* Input Autofill override for dark mode */
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #0f172a inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Button Overrides */
+
+  .authorize-btn {
+    --mdc-filled-button-container-shape: 14px;
+    height: 54px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* Error spacing adjustment */
+
+  .mat-mdc-form-field-subscript-wrapper {
+    font-size: 10px !important;
+    padding-top: 4px !important;
+  }
+}
+
+/* Background Grid Utility */
+.bg-grid-dots {
+  background-image: radial-gradient(circle at 1px 1px, rgba(59, 130, 246, 0.12) 1px, transparent 0);
+  background-size: 28px 28px;
+}
