@@ -46,5 +46,9 @@ Thumbs.db
 # I don't do AI stuff in this learning project
 .gemini/
 .agents/
+.agent/
+.agent-lock.json
 agent.json
 *.skill
+skills-lock.json
+
