@@ -1,19 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
-
-// Matches the Kotlin AuthResponse DTO
-export interface AuthResponse {
-  token: string;
-  refreshToken: string;
-  email: string;
-}
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
+import { environment } from '../../../../environments/environment';
+import { AuthResponse, LoginCredentials } from '../models/auth.models';
 
 @Injectable({
   providedIn: 'root',
@@ -42,35 +31,56 @@ export class AuthService {
     }
   });
 
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
+  login(credentials: LoginCredentials, rememberMe: boolean = false): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
       tap((response) => {
         // 1. Save to state
         this.authState.set(response);
 
-        // 2. Save to localStorage so they stay logged in on refresh
-        localStorage.setItem('hive_token', response.token);
-        localStorage.setItem('hive_refresh', response.refreshToken);
+        // 2. Choose storage based on rememberMe
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem('hive_token', response.token);
+        storage.setItem('hive_refresh', response.refreshToken);
+        storage.setItem('hive_email', response.email);
+
+        // Save preference for app load
+        if (rememberMe) {
+          localStorage.setItem('hive_remember_me', 'true');
+        } else {
+          localStorage.removeItem('hive_remember_me');
+        }
       }),
     );
   }
 
   logout(): void {
     this.authState.set(null);
+
+    // Clear all possible storages
     localStorage.removeItem('hive_token');
     localStorage.removeItem('hive_refresh');
+    localStorage.removeItem('hive_email');
+    localStorage.removeItem('hive_remember_me');
+
+    sessionStorage.removeItem('hive_token');
+    sessionStorage.removeItem('hive_refresh');
+    sessionStorage.removeItem('hive_email');
   }
 
   // Helper method to load token on app startup
   loadTokenFromStorage(): void {
-    const token = localStorage.getItem('hive_token');
-    const refreshToken = localStorage.getItem('hive_refresh');
-    // Assuming email is inside the JWT, or we just rely on token presence for now
-    if (token && refreshToken) {
+    const isRemembered = localStorage.getItem('hive_remember_me') === 'true';
+    const storage = isRemembered ? localStorage : sessionStorage;
+
+    const token = storage.getItem('hive_token');
+    const refreshToken = storage.getItem('hive_refresh');
+    const email = storage.getItem('hive_email');
+
+    if (token && refreshToken && email) {
       this.authState.set({
         token,
         refreshToken,
-        email: 'loaded-from-storage',
+        email,
       });
     }
   }

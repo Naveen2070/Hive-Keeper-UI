@@ -2,8 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { AuthService, User } from './auth';
-import { environment } from '../../../environments/environment';
+import { AuthService } from './auth.service';
+import { AuthResponse } from '../models/auth.models';
+import { environment } from '../../../../environments/environment';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -17,8 +18,8 @@ describe('AuthService', () => {
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
 
-    // Mock localStorage
-    const localStorageMock = (() => {
+    // Mock sessionStorage
+    const sessionStorageMock = (() => {
       let store: Record<string, string> = {};
       return {
         getItem: vi.fn((key: string) => store[key] || null),
@@ -33,7 +34,7 @@ describe('AuthService', () => {
         }),
       };
     })();
-    Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+    Object.defineProperty(window, 'sessionStorage', { value: sessionStorageMock, writable: true });
   });
 
   afterEach(() => {
@@ -45,36 +46,31 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should login and set user signal', () => {
-    const mockUser: User = {
-      id: '1',
-      email: 'test@test.com',
-      name: 'Test User',
+  it('should login and set authState', () => {
+    const mockResponse: AuthResponse = {
       token: 'mock-token',
+      refreshToken: 'mock-refresh',
+      email: 'test@test.com',
     };
     const credentials = { email: 'test@test.com', password: 'password123' };
 
-    service.login(credentials).subscribe((user) => {
-      expect(user).toEqual(mockUser);
-      expect(service.user()).toEqual(mockUser);
+    service.login(credentials).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
       expect(service.isAuthenticated()).toBe(true);
-      expect(window.localStorage.setItem).toHaveBeenCalledWith('hive_token', 'mock-token');
+      expect(window.sessionStorage.setItem).toHaveBeenCalledWith('hive_token', 'mock-token');
+      expect(window.sessionStorage.setItem).toHaveBeenCalledWith('hive_refresh', 'mock-refresh');
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
     expect(req.request.method).toBe('POST');
-    req.flush(mockUser);
+    req.flush(mockResponse);
   });
 
-  it('should logout and clear signals', () => {
-    // Manually set initial state
-    (service as any).currentUser.set({ id: '1', name: 'Test' } as User);
-    (service as any).isAuthenticated.set(true);
-
+  it('should logout and clear state', () => {
     service.logout();
 
-    expect(service.user()).toBeNull();
     expect(service.isAuthenticated()).toBe(false);
-    expect(window.localStorage.removeItem).toHaveBeenCalledWith('hive_token');
+    expect(window.sessionStorage.removeItem).toHaveBeenCalledWith('hive_token');
+    expect(window.sessionStorage.removeItem).toHaveBeenCalledWith('hive_refresh');
   });
 });

@@ -1,0 +1,240 @@
+<div
+  class="min-h-screen bg-[#111111] flex items-center justify-center p-4 sm:p-8 font-sans selection:bg-blue-500/30"
+>
+  <div
+    class="w-full max-w-250 bg-[#222222] rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-[0_0_50px_rgba(0,0,0,0.5)] ring-1 ring-white/10"
+  >
+    <div
+      class="w-full md:w-[45%] bg-[#0B1121] bg-blueprint-grid relative p-8 md:p-12 flex flex-col justify-between border-r border-white/5 select-none cursor-default"
+    >
+      <div
+        class="absolute top-0 left-0 w-full h-full bg-blue-600/5 blur-[100px] pointer-events-none"
+      ></div>
+
+      <div class="relative z-10">
+        <div
+          class="w-14 h-14 bg-linear-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-500/20"
+        >
+          <mat-icon class="scale-125">shield</mat-icon>
+        </div>
+
+        <h1 class="text-3xl font-bold text-white mb-3">HiveKeeper</h1>
+        <p class="text-slate-400 text-sm leading-relaxed max-w-70">
+          Central command center for managing the polyglot microservices ecosystem.
+        </p>
+
+        <div class="mt-12 flex flex-col gap-6">
+          <div class="flex items-start gap-4">
+            <div
+              class="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center text-slate-400 shrink-0 bg-white/5"
+            >
+              <mat-icon class="scale-75">manage_accounts</mat-icon>
+            </div>
+            <div>
+              <h3 class="text-white text-sm font-medium mb-0.5">Unified Oversight</h3>
+              <p class="text-slate-500 text-xs">Monitor users, posts, and platform activity</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div
+              class="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center text-slate-400 shrink-0 bg-white/5"
+            >
+              <mat-icon class="scale-75">movie_filter</mat-icon>
+            </div>
+            <div>
+              <h3 class="text-white text-sm font-medium mb-0.5">Entertainment Registry</h3>
+              <p class="text-slate-500 text-xs">Manage cinema and event registrations</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div
+              class="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center text-slate-400 shrink-0 bg-white/5"
+            >
+              <mat-icon class="scale-75">query_stats</mat-icon>
+            </div>
+            <div>
+              <h3 class="text-white text-sm font-medium mb-0.5">Service Monitoring</h3>
+              <p class="text-slate-500 text-xs">Real-time health of the microservices</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative z-10 mt-12 md:mt-0">
+        <span class="text-[10px] font-mono font-semibold text-slate-600 uppercase tracking-widest">
+          HIVE-ADMIN-CORE &middot; AUTH-PROVIDER-V1 &middot; REL-2026.03
+        </span>
+      </div>
+    </div>
+
+    <div
+      class="w-full md:w-[55%] p-8 md:p-14 lg:px-16 flex flex-col justify-center relative bg-[#222222]"
+    >
+      @if (isLoading()) {
+        <div class="absolute top-0 left-0 w-full h-1 bg-blue-500/20 overflow-hidden">
+          <div class="h-full bg-blue-500 w-1/3 animate-[slide_1s_ease-in-out_infinite]"></div>
+        </div>
+      }
+
+      <div class="flex items-center gap-2 mb-6 select-none cursor-default">
+        <div
+          class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+        ></div>
+        <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest"
+        >Admin Control Center</span
+        >
+      </div>
+
+      <h2 class="text-3xl font-bold text-white mb-2 select-none cursor-default">
+        Sign in to your workspace
+      </h2>
+      <p class="text-slate-400 text-sm mb-8 select-none cursor-default">
+        Use your admin credentials to continue
+      </p>
+
+      @if (errorMessage()) {
+        <div
+          class="mb-6 flex items-start gap-3 p-3.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm animate-in fade-in zoom-in duration-300"
+        >
+          <mat-icon class="w-5! h-5! text-[20px]! mt-0.5">error_outline</mat-icon>
+          <span class="font-medium leading-tight">{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-1.5">
+          <label
+            class="text-[10px] font-mono font-semibold uppercase tracking-widest text-slate-400"
+          >Email Address</label
+          >
+          <div class="relative flex items-center">
+            <mat-icon class="absolute left-3 text-slate-500 scale-90 pointer-events-none"
+            >mail_outline
+            </mat-icon
+            >
+            <input
+              [class.border-red-500]="
+                loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+              "
+              [readonly]="isLoading()"
+              class="w-full bg-[#2A2A2A] border border-white/10 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg py-2.5 pl-10 pr-4 text-white text-sm placeholder:text-slate-600 outline-none transition-all"
+              formControlName="email"
+              placeholder="admin@company.com"
+              type="email"
+            />
+          </div>
+          <div class="h-4">
+            @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
+              <span
+                class="text-[10px] text-red-400 block animate-in fade-in slide-in-from-top-1 duration-200"
+              >Email is required</span
+              >
+            } @else if (loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched) {
+              <span
+                class="text-[10px] text-red-400 block animate-in fade-in slide-in-from-top-1 duration-200"
+              >Please enter a valid email address</span
+              >
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label
+            class="text-[10px] font-mono font-semibold uppercase tracking-widest text-slate-400"
+          >Password</label
+          >
+          <div class="relative flex items-center">
+            <mat-icon class="absolute left-3 text-slate-500 scale-90 pointer-events-none"
+            >lock_outline
+            </mat-icon
+            >
+            <input
+              [class.border-red-500]="
+                loginForm.get('password')?.invalid && loginForm.get('password')?.touched
+              "
+              [readonly]="isLoading()"
+              [type]="hidePassword ? 'password' : 'text'"
+              class="w-full bg-[#2A2A2A] border border-white/10 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg py-2.5 pl-10 pr-12 text-white text-sm placeholder:text-slate-600 outline-none transition-all tracking-widest"
+              formControlName="password"
+              placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+            />
+            <button
+              (click)="togglePasswordVisibility($event)"
+              class="absolute right-3 text-slate-400 hover:text-white transition-colors flex items-center outline-none"
+              tabindex="-1"
+              type="button"
+            >
+              <mat-icon class="scale-90">{{
+                  hidePassword ? 'visibility' : 'visibility_off'
+                }}
+              </mat-icon>
+            </button>
+          </div>
+          <div class="h-4">
+            @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+              <span
+                class="text-[10px] text-red-400 block animate-in fade-in slide-in-from-top-1 duration-200"
+              >Password is required</span
+              >
+            }
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mt-1 mb-2">
+          <label class="flex items-center gap-2 cursor-pointer group">
+            <div
+              class="relative flex items-center justify-center w-4 h-4 rounded bg-[#2A2A2A] border border-white/10 group-hover:border-blue-500 transition-colors"
+            >
+              <input
+                class="peer appearance-none w-full h-full absolute cursor-pointer"
+                formControlName="rememberMe"
+                type="checkbox"
+              />
+              <mat-icon
+                class="scale-[0.6] text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
+              >check
+              </mat-icon
+              >
+            </div>
+            <span class="text-sm text-white select-none">Keep me signed in</span>
+          </label>
+          <a class="text-sm text-blue-500 hover:text-blue-400 transition-colors" href="#"
+          >Forgot password?</a
+          >
+        </div>
+
+        <button
+          [disabled]="isLoading() || loginForm.invalid"
+          class="w-full bg-[#2A2A2A] hover:bg-[#333333] border border-white/10 text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          type="submit"
+        >
+          <mat-icon class="scale-90 text-slate-400">login</mat-icon>
+          Sign in
+        </button>
+
+        <div class="flex items-center gap-4 my-2">
+          <div class="h-px bg-white/10 flex-1"></div>
+          <span class="text-xs text-slate-500">or continue with</span>
+          <div class="h-px bg-white/10 flex-1"></div>
+        </div>
+
+        <button
+          class="w-full bg-transparent hover:bg-white/5 border border-white/10 text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
+          type="button"
+        >
+          <mat-icon class="scale-90 text-slate-400">grid_view</mat-icon>
+          Single Sign-On (SSO)
+        </button>
+      </form>
+
+      <p class="text-center text-xs text-slate-500 mt-8 leading-relaxed">
+        By signing in you agree to the
+        <a class="text-blue-500 hover:underline" href="#">Terms of Service</a> and
+        <a class="text-blue-500 hover:underline" href="#">Privacy Policy</a>.<br />
+        Protected by 2FA & HMAC-SHA256 S2S verification policies.
+      </p>
+    </div>
+  </div>
+</div>
