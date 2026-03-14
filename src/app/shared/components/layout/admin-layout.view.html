@@ -1,0 +1,33 @@
+<div class="h-screen w-full bg-[#111111] flex font-sans text-slate-300 selection:bg-blue-500/30 overflow-hidden">
+
+  <app-sidebar
+    (logout)="onLogout()"
+    [primaryRole]="primaryRole()"
+    [userEmail]="userEmail()" />
+
+  <main class="flex-1 flex flex-col h-screen relative bg-[#111111]">
+
+    <header
+      class="h-16 flex items-center justify-between px-8 border-b border-white/5 bg-[#111111]/80 backdrop-blur-md z-10 shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+        <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest">System Active</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button
+          class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 text-slate-400 hover:text-white transition-colors">
+          <mat-icon class="scale-90">notifications_none</mat-icon>
+        </button>
+      </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto relative">
+      <div class="absolute inset-0 bg-blueprint-grid opacity-30 pointer-events-none -z-10 fixed"></div>
+
+      <div class="p-8 h-full">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </main>
+</div>

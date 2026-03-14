@@ -1,8 +1,10 @@
+import { inject } from '@angular/core';
 import { HttpInterceptorFn } from '@angular/common/http';
+import { AuthService } from '../../features/auth/services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  // Try to get token from either storage
-  const token = sessionStorage.getItem('hive_token') || localStorage.getItem('hive_token');
+  const authService = inject(AuthService);
+  const token = authService.token();
 
   if (token) {
     const cloned = req.clone({

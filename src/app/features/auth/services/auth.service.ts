@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { AuthResponse, LoginCredentials } from '../models/auth.models';
+import { AuthResponse, getPrimaryRole, LoginCredentials, parseJwt } from '../models/auth.models';
 
 @Injectable({
   providedIn: 'root',
@@ -16,20 +16,28 @@ export class AuthService {
   // Derived state: Automatically true if authState has a token
   readonly isAuthenticated = computed(() => this.authState() !== null);
 
-  // Derived state: Decodes the JWT on the fly to expose our Multi-Tenant roles!
-  readonly userPermissions = computed(() => {
-    const token = this.authState()?.token;
-    if (!token) return {};
+  // Derived state: Current token
+  readonly token = computed(() => this.authState()?.token ?? null);
 
-    try {
-      // Decode the base64 JWT payload (the middle section of the token)
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.permissions || {}; // Returns { "events": ["ROLE_ORGANIZER"] }
-    } catch (e) {
-      console.error('Failed to decode JWT permissions:', e);
-      return {};
-    }
+  // Derived state: Full JWT payload
+  readonly userPayload = computed(() => {
+    const token = this.authState()?.token;
+    return token ? parseJwt(token) : null;
   });
+
+  // Derived state: User roles/permissions
+  readonly userPermissions = computed(() => this.userPayload()?.permissions ?? {});
+  // Derived state: User metadata
+  readonly userEmail = computed(() => this.userPayload()?.email);
+  readonly userId = computed(() => this.userPayload()?.id);
+
+  /**
+   * Get the primary role for a given domain (e.g., 'events').
+   * Since this reads the 'userPayload' signal, it remains reactive.
+   */
+  primaryRole(domain: string = 'events'): string {
+    return getPrimaryRole(this.userPayload(), domain);
+  }
 
   login(credentials: LoginCredentials, rememberMe: boolean = false): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
