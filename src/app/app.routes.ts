@@ -14,7 +14,17 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('./features/dashboard/routes').then((m) => m.DASHBOARD_ROUTES),
+        loadComponent: () =>
+          import('./features/dashboard/components/overview.container').then(
+            (m) => m.OverviewContainerComponent,
+          ),
+      },
+      {
+        path: 'cinemas',
+        loadComponent: () =>
+          import('./features/cinemas/components/cinemas.container').then(
+            (m) => m.CinemasContainerComponent,
+          ),
       },
       {
         path: '',
@@ -25,6 +35,9 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'dashboard',
+    loadComponent: () =>
+      import('./shared/components/not-found/not-found.container').then(
+        (m) => m.NotFoundContainerComponent,
+      ),
   },
 ];

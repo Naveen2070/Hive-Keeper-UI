@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
           <mat-icon class="scale-75">shield</mat-icon>
         </div>
         <span class="text-lg font-bold text-white tracking-wide"
-          >Hive<span class="text-blue-500">Keeper</span></span
+          >Hive <span class="text-blue-500">Keeper</span></span
         >
       </div>
 
@@ -29,39 +29,58 @@ import { MatIconModule } from '@angular/material/icon';
         </div>
 
         <a
-          routerLink="/dashboard/overview"
-          routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/30 font-medium shadow-[inset_2px_0_0_#3b82f6]"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+          routerLink="/dashboard"
+          routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_2px_0_0_#3b82f6]"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-all duration-200"
         >
-          <mat-icon class="scale-90 opacity-80">dashboard</mat-icon>
-          Overview
+          <mat-icon
+            class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
+            >dashboard</mat-icon
+          >
+          <span>Overview</span>
         </a>
 
         <a
-          routerLink="/dashboard/cinemas"
-          routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/30 font-medium shadow-[inset_2px_0_0_#3b82f6]"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+          routerLink="/cinemas"
+          routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_2px_0_0_#3b82f6]"
+          class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-all duration-200"
         >
-          <mat-icon class="scale-90 opacity-80">movie_filter</mat-icon>
-          Cinema Approvals
+          <mat-icon
+            class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
+            >movie_filter</mat-icon
+          >
+          <span>Cinema Approvals</span>
         </a>
 
         <a
           routerLink="/dashboard/users"
-          routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/30 font-medium shadow-[inset_2px_0_0_#3b82f6]"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+          routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_2px_0_0_#3b82f6]"
+          class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-all duration-200"
         >
-          <mat-icon class="scale-90 opacity-80">manage_accounts</mat-icon>
-          User Management
+          <mat-icon
+            class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
+            >manage_accounts</mat-icon
+          >
+          <span>User Management</span>
         </a>
+
+        <div
+          class="text-[10px] font-mono font-semibold uppercase tracking-widest text-slate-500 mb-2 px-2 mt-6"
+        >
+          Audit & Security
+        </div>
 
         <a
           routerLink="/dashboard/audit"
-          routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/30 font-medium shadow-[inset_2px_0_0_#3b82f6]"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+          routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_2px_0_0_#3b82f6]"
+          class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-all duration-200"
         >
-          <mat-icon class="scale-90 opacity-80">receipt_long</mat-icon>
-          Audit Logs
+          <mat-icon
+            class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
+            >receipt_long</mat-icon
+          >
+          <span>Audit Logs</span>
         </a>
       </nav>
 
@@ -82,10 +101,10 @@ import { MatIconModule } from '@angular/material/icon';
 
         <button
           (click)="logout.emit()"
-          class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#2A2A2A] hover:bg-[#333333] border border-white/10 text-slate-300 hover:text-white rounded-lg text-sm transition-colors"
+          class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#1A1A1A] hover:bg-[#222222] border border-white/10 text-slate-300 hover:text-white rounded-xl text-sm transition-all duration-200"
         >
           <mat-icon class="scale-90 text-slate-400">logout</mat-icon>
-          Sign out
+          <span>Sign out</span>
         </button>
       </div>
     </aside>

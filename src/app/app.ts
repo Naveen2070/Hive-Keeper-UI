@@ -9,7 +9,7 @@ import { environment } from '../environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App implements OnInit {
-  protected readonly title = signal('Hive-Keeper-UI');
+  protected readonly title = signal('Hive Keeper Admin');
 
   ngOnInit() {
     console.log(
