@@ -1,0 +1,44 @@
+:host ::ng-deep {
+  /* Custom Scrollbar for the table container if needed */
+
+  .mat-mdc-table {
+    border-collapse: separate !important;
+  }
+
+  /* Refined Checkbox Styling */
+
+  .hive-checkbox {
+    .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate) ~ .mdc-checkbox__background {
+      border-color: rgba(255, 255, 255, 0.15) !important;
+      background-color: transparent !important;
+    }
+
+    .mdc-checkbox__background {
+      border-radius: 6px !important;
+      border-width: 1.5px !important;
+    }
+
+    .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background,
+    .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background {
+      border-color: #3b82f6 !important;
+      background-color: #3b82f6 !important;
+    }
+  }
+
+  /* Table Header refinement */
+
+  .mat-mdc-header-row {
+    height: 56px !important;
+  }
+
+  .mat-mdc-row {
+    height: 80px !important;
+    transition: all 0.2s ease !important;
+  }
+
+  /* Row hover effect */
+
+  .mat-mdc-row:hover {
+    background-color: rgba(255, 255, 255, 0.015) !important;
+  }
+}

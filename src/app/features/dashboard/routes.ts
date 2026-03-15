@@ -7,11 +7,6 @@ export const DASHBOARD_ROUTES: Routes = [
       import('./components/overview.container').then((m) => m.OverviewContainerComponent),
   },
   {
-    path: 'cinemas',
-    loadComponent: () =>
-      import('../cinemas/components/cinemas.container').then((m) => m.CinemasContainerComponent),
-  },
-  {
     path: '',
     redirectTo: 'overview',
     pathMatch: 'full',

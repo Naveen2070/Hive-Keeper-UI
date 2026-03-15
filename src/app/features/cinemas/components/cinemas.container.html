@@ -1,0 +1,7 @@
+<app-cinemas-view
+  (batchStatusChange)="onBatchStatusChange($event)"
+  (refresh)="loadCinemas()"
+  (statusChange)="onStatusChange($event)"
+  [cinemas]="cinemas()"
+  [loading]="loading()"
+/>

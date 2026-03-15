@@ -77,12 +77,11 @@ export class AuthService {
 
   // Helper method to load token on app startup
   loadTokenFromStorage(): void {
-    const isRemembered = localStorage.getItem('hive_remember_me') === 'true';
-    const storage = isRemembered ? localStorage : sessionStorage;
-
-    const token = storage.getItem('hive_token');
-    const refreshToken = storage.getItem('hive_refresh');
-    const email = storage.getItem('hive_email');
+    // Check both storages, preferred remembered if available
+    const token = localStorage.getItem('hive_token') || sessionStorage.getItem('hive_token');
+    const refreshToken =
+      localStorage.getItem('hive_refresh') || sessionStorage.getItem('hive_refresh');
+    const email = localStorage.getItem('hive_email') || sessionStorage.getItem('hive_email');
 
     if (token && refreshToken && email) {
       this.authState.set({

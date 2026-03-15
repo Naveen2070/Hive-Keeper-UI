@@ -14,17 +14,15 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadComponent: () =>
-          import('./features/dashboard/components/overview.container').then(
-            (m) => m.OverviewContainerComponent,
-          ),
+        loadChildren: () => import('./features/dashboard/routes').then((m) => m.DASHBOARD_ROUTES),
       },
       {
         path: 'cinemas',
-        loadComponent: () =>
-          import('./features/cinemas/components/cinemas.container').then(
-            (m) => m.CinemasContainerComponent,
-          ),
+        loadChildren: () => import('./features/cinemas/routes').then((m) => m.CINEMAS_ROUTES),
+      },
+      {
+        path: 'events',
+        loadChildren: () => import('./features/events/routes').then((m) => m.EVENTS_ROUTES),
       },
       {
         path: '',

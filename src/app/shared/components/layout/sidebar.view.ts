@@ -29,13 +29,12 @@ import { MatIconModule } from '@angular/material/icon';
         </div>
 
         <a
-          routerLink="/dashboard"
+          routerLink="/dashboard/overview"
           routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_2px_0_0_#3b82f6]"
           [routerLinkActiveOptions]="{ exact: true }"
           class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-all duration-200"
         >
-          <mat-icon
-            class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
+          <mat-icon class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
             >dashboard</mat-icon
           >
           <span>Overview</span>
@@ -46,11 +45,21 @@ import { MatIconModule } from '@angular/material/icon';
           routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_2px_0_0_#3b82f6]"
           class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-all duration-200"
         >
-          <mat-icon
-            class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
+          <mat-icon class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
             >movie_filter</mat-icon
           >
           <span>Cinema Approvals</span>
+        </a>
+
+        <a
+          routerLink="/events"
+          routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_2px_0_0_#3b82f6]"
+          class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-all duration-200"
+        >
+          <mat-icon class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
+            >event_note</mat-icon
+          >
+          <span>Events Oversight</span>
         </a>
 
         <a
@@ -58,8 +67,7 @@ import { MatIconModule } from '@angular/material/icon';
           routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_2px_0_0_#3b82f6]"
           class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-all duration-200"
         >
-          <mat-icon
-            class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
+          <mat-icon class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
             >manage_accounts</mat-icon
           >
           <span>User Management</span>
@@ -76,8 +84,7 @@ import { MatIconModule } from '@angular/material/icon';
           routerLinkActive="bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_2px_0_0_#3b82f6]"
           class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent hover:bg-white/5 text-sm text-slate-400 hover:text-slate-200 transition-all duration-200"
         >
-          <mat-icon
-            class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
+          <mat-icon class="scale-90 opacity-70 group-[.active]:opacity-100 transition-opacity"
             >receipt_long</mat-icon
           >
           <span>Audit Logs</span>

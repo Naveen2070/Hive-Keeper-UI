@@ -1,0 +1,220 @@
+<div class="space-y-6 animate-in fade-in duration-500">
+  <!-- Header -->
+  <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-50 tracking-tight">Event Oversight</h1>
+      <p class="text-slate-500 text-sm mt-1.5 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+        Monitor and moderate platform-wide events.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Enhanced Search Box -->
+      <div class="relative group min-w-[320px]">
+        <mat-icon
+          class="absolute left-3.5 top-1/2 -translate-y-1/2 !text-slate-500 group-focus-within:!text-blue-400 transition-colors !text-[20px] !w-5 !h-5"
+        >
+          search
+        </mat-icon>
+        <input
+          (input)="onSearch($any($event.target).value)"
+          [value]="searchQuery()"
+          class="w-full bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.07] border border-white/10 focus:border-blue-500/50 rounded-xl py-2.5 pl-11 pr-4 text-[13px] text-slate-200 placeholder:text-slate-600 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10"
+          placeholder="Search events or organizers..."
+          type="text"
+        />
+      </div>
+
+      <button
+        (click)="refresh.emit()"
+        [disabled]="loading()"
+        class="!bg-white/[0.03] !text-slate-300 hover:!bg-white/[0.08] !border !border-white/10 !rounded-xl !h-[42px] !px-4"
+        mat-flat-button
+      >
+        <mat-icon [class.animate-spin]="loading()" class="!text-[18px] !mr-2">refresh</mat-icon>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- Filter Tabs -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/5 pt-2">
+    <nav class="flex gap-1">
+      @for (tab of tabs; track tab.id) {
+        <button
+          (click)="activeTab.set(tab.id)"
+          [class]="getTabClass(tab.id)"
+          class="px-5 py-3.5 text-[13px] font-semibold transition-all duration-200 border-b-2 relative -mb-[2px] z-10"
+        >
+          <span class="relative z-10 flex items-center gap-2">
+            {{ tab.label }}
+            @if (tab.count() > 0) {
+              <span
+                class="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-white/5 text-slate-500 border border-white/5"
+              >
+                {{ tab.count() }}
+              </span>
+            }
+          </span>
+        </button>
+      }
+    </nav>
+  </div>
+
+  <!-- Table Container -->
+  <div class="bg-[#0C0E12] rounded-2xl border border-white/5 overflow-hidden relative shadow-2xl shadow-black/40">
+    <table [dataSource]="loading() ? skeletonData : filteredEvents()" class="w-full !bg-transparent" mat-table>
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th
+          *matHeaderCellDef
+          class="!text-slate-500 !font-bold !text-[11px] !uppercase !tracking-widest !border-white/5 !bg-[#0E1015] !px-6"
+          mat-header-cell
+        >
+          Event Details
+        </th>
+        <td *matCellDef="let e" class="!border-white/[0.03] !px-6" mat-cell>
+          @if (!loading()) {
+            <div class="py-4">
+              <p class="text-slate-100 font-semibold text-[14px] leading-tight">{{ e.title }}</p>
+              <div class="flex items-center gap-2.5 mt-2">
+                <div class="flex items-center gap-1 text-[12px] text-slate-500">
+                  <mat-icon class="!text-[14px] !w-3.5 !h-3.5 !text-blue-400/70">location_on</mat-icon>
+                  {{ e.location }}
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="py-4 space-y-2.5">
+              <div class="h-4.5 w-40 bg-white/5 rounded-lg animate-pulse"></div>
+              <div class="h-3.5 w-56 bg-white/5 rounded-lg animate-pulse opacity-50"></div>
+            </div>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Organizer Column -->
+      <ng-container matColumnDef="organizer">
+        <th
+          *matHeaderCellDef
+          class="!text-slate-500 !font-bold !text-[11px] !uppercase !tracking-widest !border-white/5 !bg-[#0E1015]"
+          mat-header-cell
+        >
+          Organizer
+        </th>
+        <td *matCellDef="let e" class="!border-white/[0.03]" mat-cell>
+          @if (!loading()) {
+            <span class="text-[13px] text-slate-300">{{ e.organizerName }}</span>
+          } @else {
+            <div class="h-4 w-32 bg-white/5 rounded animate-pulse opacity-40"></div>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Dates Column -->
+      <ng-container matColumnDef="dates">
+        <th
+          *matHeaderCellDef
+          class="!text-slate-500 !font-bold !text-[11px] !uppercase !tracking-widest !border-white/5 !bg-[#0E1015]"
+          mat-header-cell
+        >
+          Date
+        </th>
+        <td *matCellDef="let e" class="!border-white/[0.03]" mat-cell>
+          @if (!loading()) {
+            <div class="flex flex-col text-[12px]">
+              <span class="text-slate-300">{{ e.startDate | date: 'MMM d, y, h:mm a' }}</span>
+              <span class="text-slate-600">to {{ e.endDate | date: 'h:mm a' }}</span>
+            </div>
+          } @else {
+            <div class="h-8 w-28 bg-white/5 rounded animate-pulse opacity-40"></div>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th
+          *matHeaderCellDef
+          class="!text-slate-500 !font-bold !text-[11px] !uppercase !tracking-widest !border-white/5 !bg-[#0E1015]"
+          mat-header-cell
+        >
+          Status
+        </th>
+        <td *matCellDef="let e" class="!border-white/[0.03]" mat-cell>
+          @if (!loading()) {
+            <span
+              [class]="statusClass(e.status)"
+              class="inline-flex items-center px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-wider border shadow-sm"
+            >
+              {{ e.status }}
+            </span>
+          } @else {
+            <div class="h-8 w-20 bg-white/5 rounded-lg animate-pulse opacity-30"></div>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th
+          *matHeaderCellDef
+          class="!text-right !text-slate-500 !font-bold !text-[11px] !uppercase !tracking-widest !border-white/5 !bg-[#0E1015] !px-6"
+          mat-header-cell
+        >
+          Actions
+        </th>
+        <td *matCellDef="let e" class="!text-right !border-white/[0.03] !px-6" mat-cell>
+          @if (!loading()) {
+            <button [matMenuTriggerFor]="menu" class="!text-slate-400 hover:!text-white" mat-icon-button>
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu" class="!bg-[#161a24] !border !border-white/10 !rounded-xl !mt-2">
+              <button
+                (click)="statusChange.emit({ id: e.id, status: 'PUBLISHED' })"
+                [disabled]="e.status === 'PUBLISHED'"
+                class="hover:!bg-white/5 !text-slate-300"
+                mat-menu-item
+              >
+                <mat-icon class="!text-emerald-400">public</mat-icon>
+                <span>Force Publish</span>
+              </button>
+              <button
+                (click)="statusChange.emit({ id: e.id, status: 'CANCELLED' })"
+                [disabled]="e.status === 'CANCELLED'"
+                class="hover:!bg-white/5 !text-slate-300"
+                mat-menu-item
+              >
+                <mat-icon class="!text-red-400">block</mat-icon>
+                <span>Force Cancel</span>
+              </button>
+              <mat-divider class="!border-white/5"></mat-divider>
+              <button (click)="deleteRequest.emit(e.id)" class="hover:!bg-red-500/10 !text-red-400" mat-menu-item>
+                <mat-icon class="!text-red-400">delete_forever</mat-icon>
+                <span>Delete Event</span>
+              </button>
+            </mat-menu>
+          } @else {
+            <div class="h-8 w-8 bg-white/5 rounded-full animate-pulse opacity-20 ml-auto"></div>
+          }
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="cols" class="!h-14" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: cols" class="hover:!bg-white/[0.02] transition-colors group !h-20" mat-row></tr>
+    </table>
+
+    @if (!loading() && filteredEvents().length === 0) {
+      <div class="p-24 flex flex-col items-center justify-center text-slate-600">
+        <div class="w-20 h-20 rounded-3xl bg-white/[0.03] flex items-center justify-center mb-6 border border-white/5">
+          <mat-icon class="!text-4xl opacity-20">event_busy</mat-icon>
+        </div>
+        <p class="text-base font-semibold text-slate-300">No events found</p>
+        <p class="text-[13px] text-slate-500 mt-1.5 max-w-[280px] text-center">
+          We couldn't find any events matching your current search or filters.
+        </p>
+      </div>
+    }
+  </div>
+</div>

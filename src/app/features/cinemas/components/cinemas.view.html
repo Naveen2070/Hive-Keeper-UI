@@ -1,0 +1,304 @@
+<div class="space-y-6 animate-in fade-in duration-500">
+  <!-- Header -->
+  <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-50 tracking-tight">Cinema Approvals</h1>
+      <p class="text-slate-500 text-sm mt-1.5 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+        Review and manage organizer cinema submissions.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Enhanced Search Box -->
+      <div class="relative group min-w-[320px]">
+        <mat-icon
+          class="absolute left-3.5 top-1/2 -translate-y-1/2 !text-slate-500 group-focus-within:!text-blue-400 transition-colors !text-[20px] !w-5 !h-5"
+        >
+          search
+        </mat-icon>
+        <input
+          (input)="onSearch($any($event.target).value)"
+          [value]="searchQuery()"
+          class="w-full bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.07] border border-white/10 focus:border-blue-500/50 rounded-xl py-2.5 pl-11 pr-4 text-[13px] text-slate-200 placeholder:text-slate-600 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10"
+          placeholder="Search by name, location or email..."
+          type="text"
+        />
+      </div>
+
+      <button
+        (click)="refresh.emit()"
+        [disabled]="loading()"
+        class="!bg-white/[0.03] !text-slate-300 hover:!bg-white/[0.08] !border !border-white/10 !rounded-xl !h-[42px] !px-4"
+        mat-flat-button
+      >
+        <mat-icon [class.animate-spin]="loading()" class="!text-[18px] !mr-2">refresh</mat-icon>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- Filter Tabs -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/5 pt-2">
+    <nav class="flex gap-1">
+      @for (tab of tabs; track tab.id) {
+        <button
+          (click)="activeTab.set(tab.id); selection.clear()"
+          [class]="getTabClass(tab.id)"
+          class="px-5 py-3.5 text-[13px] font-semibold transition-all duration-200 border-b-2 relative -mb-[2px] z-10"
+        >
+          <span class="relative z-10 flex items-center gap-2">
+            {{ tab.label }}
+            @if (tab.count() > 0) {
+              <span
+                class="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-white/5 text-slate-500 border border-white/5"
+              >
+                {{ tab.count() }}
+              </span>
+            }
+          </span>
+        </button>
+      }
+    </nav>
+  </div>
+
+  <!-- Table Container -->
+  <div class="bg-[#0C0E12] rounded-2xl border border-white/5 overflow-hidden relative shadow-2xl shadow-black/40">
+    <table [dataSource]="loading() ? skeletonData : filteredCinemas()" class="w-full !bg-transparent" mat-table>
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th *matHeaderCellDef class="!border-white/5 !bg-[#0E1015] !w-14 !px-4" mat-header-cell>
+          <mat-checkbox
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [disabled]="loading() || filteredCinemas().length === 0"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+            class="hive-checkbox"
+          />
+        </th>
+        <td *matCellDef="let row" class="!border-white/[0.03] !px-4" mat-cell>
+          @if (!loading()) {
+            <mat-checkbox
+              (change)="$event ? selection.toggle(row) : null"
+              (click)="$event.stopPropagation()"
+              [checked]="selection.isSelected(row)"
+              class="hive-checkbox"
+            />
+          } @else {
+            <div class="w-5 h-5 bg-white/5 rounded-md animate-pulse"></div>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Cinema Info Column -->
+      <ng-container matColumnDef="name">
+        <th
+          *matHeaderCellDef
+          class="!text-slate-500 !font-bold !text-[11px] !uppercase !tracking-widest !border-white/5 !bg-[#0E1015]"
+          mat-header-cell
+        >
+          Cinema Details
+        </th>
+        <td *matCellDef="let c" class="!border-white/[0.03]" mat-cell>
+          @if (!loading()) {
+            <div class="py-4">
+              <p class="text-slate-100 font-semibold text-[14px] leading-tight">{{ c.name }}</p>
+              <div class="flex items-center gap-2.5 mt-2">
+                <span
+                  class="font-mono text-[10px] text-slate-600 bg-white/5 px-1.5 py-0.5 rounded border border-white/5">
+                  #{{ c.id.split('-')[0] }}
+                </span>
+                <span class="w-1 h-1 rounded-full bg-slate-800"></span>
+                <span class="text-[12px] text-slate-500">{{ c.contactEmail }}</span>
+                <button
+                  (click)="copyToClipboard(c.contactEmail); $event.stopPropagation()"
+                  class="!w-6 !h-6 !min-w-0 !p-0 !text-slate-600 hover:!text-slate-300 opacity-0 group-hover:opacity-100 transition-all duration-200"
+                  mat-icon-button
+                  matTooltip="Copy email"
+                >
+                  <mat-icon class="!text-[14px]">content_copy</mat-icon>
+                </button>
+              </div>
+            </div>
+          } @else {
+            <div class="py-4 space-y-2.5">
+              <div class="h-4.5 w-40 bg-white/5 rounded-lg animate-pulse"></div>
+              <div class="h-3.5 w-56 bg-white/5 rounded-lg animate-pulse opacity-50"></div>
+            </div>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Location Column -->
+      <ng-container matColumnDef="location">
+        <th
+          *matHeaderCellDef
+          class="!text-slate-500 !font-bold !text-[11px] !uppercase !tracking-widest !border-white/5 !bg-[#0E1015]"
+          mat-header-cell
+        >
+          Location
+        </th>
+        <td *matCellDef="let c" class="!border-white/[0.03]" mat-cell>
+          @if (!loading()) {
+            <div class="flex items-center gap-2 text-slate-400 text-[13px]">
+              <div class="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center border border-white/5">
+                <mat-icon class="!text-[16px] !w-4 !h-4 !text-blue-400/70">location_on</mat-icon>
+              </div>
+              {{ c.location }}
+            </div>
+          } @else {
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-white/5 animate-pulse opacity-40"></div>
+              <div class="h-4 w-32 bg-white/5 rounded animate-pulse opacity-40"></div>
+            </div>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="approvalStatus">
+        <th
+          *matHeaderCellDef
+          class="!text-slate-500 !font-bold !text-[11px] !uppercase !tracking-widest !border-white/5 !bg-[#0E1015]"
+          mat-header-cell
+        >
+          Status
+        </th>
+        <td *matCellDef="let c" class="!border-white/[0.03]" mat-cell>
+          @if (!loading()) {
+            <span
+              [class]="statusClass(c.approvalStatus)"
+              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-wider border shadow-sm"
+            >
+              <span class="w-2 h-2 rounded-full relative">
+                <span [class]="dotClass(c.approvalStatus)"
+                      class="absolute inset-0 rounded-full animate-ping opacity-25"></span>
+                <span [class]="dotClass(c.approvalStatus)" class="absolute inset-0 rounded-full"></span>
+              </span>
+              {{ c.approvalStatus }}
+            </span>
+          } @else {
+            <div class="h-8 w-24 bg-white/5 rounded-lg animate-pulse opacity-30"></div>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th
+          *matHeaderCellDef
+          class="!text-right !text-slate-500 !font-bold !text-[11px] !uppercase !tracking-widest !border-white/5 !bg-[#0E1015] !px-6"
+          mat-header-cell
+        >
+          Actions
+        </th>
+        <td *matCellDef="let c" class="!text-right !border-white/[0.03] !px-6" mat-cell>
+          @if (!loading()) {
+            <div class="flex justify-end gap-2">
+              @if (c.approvalStatus !== 'Approved') {
+                <button
+                  (click)="onAction(c, 'Approved')"
+                  class="!text-emerald-400 hover:!bg-emerald-400/10 !w-10 !h-10 transition-all hover:scale-110"
+                  mat-icon-button
+                  matTooltip="Approve Cinema"
+                >
+                  <mat-icon class="!text-[22px]">check_circle</mat-icon>
+                </button>
+              }
+              @if (c.approvalStatus !== 'Rejected') {
+                <button
+                  (click)="onAction(c, 'Rejected')"
+                  class="!text-red-400 hover:!bg-red-400/10 !w-10 !h-10 transition-all hover:scale-110"
+                  mat-icon-button
+                  matTooltip="Reject Cinema"
+                >
+                  <mat-icon class="!text-[22px]">cancel</mat-icon>
+                </button>
+              }
+            </div>
+          } @else {
+            <div class="flex justify-end gap-3">
+              <div class="h-10 w-10 bg-white/5 rounded-xl animate-pulse opacity-20"></div>
+              <div class="h-10 w-10 bg-white/5 rounded-xl animate-pulse opacity-20"></div>
+            </div>
+          }
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="cols" class="!h-14" mat-header-row></tr>
+      <tr
+        *matRowDef="let row; columns: cols"
+        [class.bg-blue-500
+        class="hover:!bg-white/[0.02] transition-colors group !h-20"
+        mat-row
+      /5]="selection.isSelected(row)"
+      ></tr>
+    </table>
+
+    @if (!loading() && filteredCinemas().length === 0) {
+      <div class="p-24 flex flex-col items-center justify-center text-slate-600">
+        <div class="w-20 h-20 rounded-3xl bg-white/[0.03] flex items-center justify-center mb-6 border border-white/5">
+          <mat-icon class="!text-4xl opacity-20">search_off</mat-icon>
+        </div>
+        <p class="text-base font-semibold text-slate-300">No cinemas found</p>
+        <p class="text-[13px] text-slate-500 mt-1.5 max-w-[280px] text-center">
+          We couldn't find any cinemas matching your current search or filters.
+        </p>
+        <button
+          (click)="clearFilters()"
+          class="mt-6 !bg-blue-500/10 !text-blue-400 hover:!bg-blue-500/20 !rounded-xl !px-6"
+          mat-flat-button
+        >
+          Clear all filters
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Batch Actions Bar -->
+  @if (selection.hasValue()) {
+    <div
+      class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#14181F]/95 backdrop-blur-xl border border-blue-500/30 rounded-3xl px-8 py-5 flex items-center gap-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] animate-in slide-in-from-bottom-12 duration-500 z-50"
+    >
+      <div class="flex items-center gap-4 pr-8 border-r border-white/10">
+        <div class="relative">
+          <div class="absolute inset-0 bg-blue-500 blur-md opacity-40 animate-pulse"></div>
+          <span
+            class="relative w-8 h-8 rounded-xl bg-blue-500 text-white text-[12px] font-black flex items-center justify-center shadow-lg">
+            {{ selection.selected.length }}
+          </span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-sm font-bold text-slate-100">Cinemas Selected</span>
+          <span class="text-[11px] text-slate-500">Perform batch action</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button
+          (click)="onBatchAction('Approved')"
+          class="!bg-emerald-500 hover:!bg-emerald-600 !text-white !rounded-2xl !h-12 !px-6 !font-bold !shadow-lg shadow-emerald-500/10"
+          mat-flat-button
+        >
+          <mat-icon class="!text-[20px] !mr-2">check_circle</mat-icon>
+          Approve All
+        </button>
+        <button
+          (click)="onBatchAction('Rejected')"
+          class="!bg-red-500 hover:!bg-red-600 !text-white !rounded-2xl !h-12 !px-6 !font-bold !shadow-lg shadow-red-500/10"
+          mat-flat-button
+        >
+          <mat-icon class="!text-[20px] !mr-2">cancel</mat-icon>
+          Reject All
+        </button>
+        <button
+          (click)="selection.clear()"
+          class="!border-white/10 !text-slate-400 hover:!bg-white/10 !rounded-2xl !h-12 !px-6 !font-bold transition-colors"
+          mat-stroked-button
+        >
+          Cancel Selection
+        </button>
+      </div>
+    </div>
+  }
+</div>
