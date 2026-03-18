@@ -18,7 +18,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
 import { CinemaResponse } from '../services/cinema.service';
 import { CinemaStatusChangeEvent } from './cinemas.types';
-import { ConfirmDialogComponent, ConfirmDialogData } from './confirm-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-cinemas-view',

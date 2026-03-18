@@ -12,13 +12,16 @@ This document provides a comprehensive overview of the administrative and super-
 
 #### Endpoints
 
-| Method   | Path                 | Summary              | Response Type                | Description                                                   |
-|:---------|:---------------------|:---------------------|:-----------------------------|:--------------------------------------------------------------|
-| `GET`    | `/users`             | List/Search users    | `PaginatedResponse<UserDto>` | Paginated list of users with optional search.                 |
-| `GET`    | `/users/{id}`        | Get user details     | `UserDto`                    | Retrieve full details of a specific user.                     |
-| `POST`   | `/users`             | Create internal user | `UserDto`                    | Manually create users with roles like `ADMIN` or `ORGANIZER`. |
-| `PATCH`  | `/users/{id}/status` | Ban/Unban user       | `UserDto`                    | Toggle active status of a user.                               |
-| `DELETE` | `/users/{id}/hard`   | Hard delete user     | `void` (204)                 | Permanently delete a user from the database.                  |
+| Method   | Path                                    | Summary              | Response Type                | Description                                                   |
+|:---------|:----------------------------------------|:---------------------|:-----------------------------|:--------------------------------------------------------------|
+| `GET`    | `/users`                                | List/Search users    | `PaginatedResponse<UserDto>` | Paginated list of users with optional search.                 |
+| `GET`    | `/users/{id}`                           | Get user details     | `UserDto`                    | Retrieve full details of a specific user.                     |
+| `POST`   | `/users`                                | Create internal user | `UserDto`                    | Manually create users with roles like `ADMIN` or `ORGANIZER`. |
+| `PATCH`  | `/users/{id}/status`                    | Ban/Unban user       | `UserDto`                    | Toggle active status of a user.                               |
+| `DELETE` | `/users/{id}/hard`                      | Hard delete user     | `void` (204)                 | Permanently delete a user from the database.                  |
+| `POST`   | `/users/{id}/roles`                     | Add role to user     | `UserDto`                    | Assign a new role to a user for a specific domain.            |
+| `PUT`    | `/users/{id}/roles`                     | Update user roles    | `UserDto`                    | Update or assign multiple roles across domains.               |
+| `DELETE` | `/users/{id}/roles/{domain}/{roleName}` | Remove user role     | `UserDto`                    | Remove a specific role from a user in a domain.               |
 
 ---
 
@@ -52,6 +55,19 @@ This document provides a comprehensive overview of the administrative and super-
 | `email`       | `String`              | Not Blank, Email              | Valid email address                                 |
 | `password`    | `String`              | Not Blank, min 8 chars        | User's password                                     |
 | `domainRoles` | `Map<String, String>` | Default: `{"events": "USER"}` | Map of domain to role (e.g., `{"events": "ADMIN"}`) |
+
+#### `AddUserRoleRequest`
+
+| Field      | Type     | Constraints | Description                  |
+|:-----------|:---------|:------------|:-----------------------------|
+| `domain`   | `String` | Not Blank   | Domain for the role          |
+| `roleName` | `String` | Not Blank   | Name of the role to be added |
+
+#### `UpdateUserRolesRequest`
+
+| Field         | Type                  | Constraints | Description                                       |
+|:--------------|:----------------------|:------------|:--------------------------------------------------|
+| `domainRoles` | `Map<String, String>` | Not Empty   | Map of domains to role names for multiple updates |
 
 ---
 

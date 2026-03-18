@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { MOCK_AUTH_RESPONSE } from '../mocks/auth.mock';
 import { MOCK_CINEMAS } from '../mocks/cinema.mock';
 import { MOCK_EVENTS_PAGINATED } from '../mocks/event.mock';
+import { MOCK_USERS, MOCK_USERS_PAGINATED } from '../mocks/user.mock';
 
 export const mockInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
@@ -45,6 +46,28 @@ export const mockInterceptor: HttpInterceptorFn = (
   // Mock DELETE /api/events/{id}
   if (url.includes('/events/') && method === 'DELETE') {
     return of(new HttpResponse({ status: 204 })).pipe(delay(500));
+  }
+
+  // --- Identity Service Mocks ---
+
+  // Mock GET /api/admin/users
+  if (url.endsWith('/admin/users') && method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: MOCK_USERS_PAGINATED })).pipe(delay(700));
+  }
+
+  // Mock POST /api/admin/users (Create User)
+  if (url.endsWith('/admin/users') && method === 'POST') {
+    return of(new HttpResponse({ status: 201, body: MOCK_USERS[0] })).pipe(delay(1000));
+  }
+
+  // Mock PATCH /api/admin/users/{id}/status (Ban/Unban)
+  if (url.includes('/admin/users/') && url.endsWith('/status') && method === 'PATCH') {
+    return of(new HttpResponse({ status: 200, body: MOCK_USERS[0] })).pipe(delay(600));
+  }
+
+  // Mock DELETE /api/admin/users/{id}/hard (Hard Delete)
+  if (url.includes('/admin/users/') && url.endsWith('/hard') && method === 'DELETE') {
+    return of(new HttpResponse({ status: 204 })).pipe(delay(800));
   }
 
   // Fallback to real API for other requests

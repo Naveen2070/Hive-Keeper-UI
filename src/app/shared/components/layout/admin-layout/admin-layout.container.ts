@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthService } from '../../../features/auth/services/auth.service';
-import { SidebarComponent } from './sidebar.view';
+import { AuthService } from '../../../../features/auth/services/auth.service';
+import { SidebarComponent } from '../sidebar/sidebar.view';
 
 @Component({
   selector: 'app-admin-layout',
@@ -22,6 +22,6 @@ export class AdminLayoutContainerComponent {
 
   async onLogout() {
     this.authService.logout();
-    await this.router.navigate(['/auth/login']);
+    await this.router.navigate(['/login']);
   }
 }

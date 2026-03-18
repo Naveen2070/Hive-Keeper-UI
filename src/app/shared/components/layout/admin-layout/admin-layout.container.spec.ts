@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AdminLayoutContainerComponent } from './admin-layout.container';
 import { provideRouter } from '@angular/router';
-import { AuthService } from '../../../features/auth/services/auth.service';
+import { AuthService } from '../../../../features/auth/services/auth.service';
 import { Component, signal } from '@angular/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -26,7 +26,7 @@ describe('AdminLayoutContainerComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AdminLayoutContainerComponent],
       providers: [
-        provideRouter([{ path: 'auth/login', component: MockComponent }]),
+        provideRouter([{ path: 'login', component: MockComponent }]),
         { provide: AuthService, useValue: mockAuthService },
       ],
     }).compileComponents();

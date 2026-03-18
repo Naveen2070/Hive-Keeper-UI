@@ -228,12 +228,12 @@
       <tr *matHeaderRowDef="cols" class="!h-14" mat-header-row></tr>
       <tr
         *matRowDef="let row; columns: cols"
-        [class.bg-blue-500
-        class="hover:!bg-white/[0.02] transition-colors group !h-20"
         mat-row
-      /5]="selection.isSelected(row)"
+        [class.bg-blue-500/5]="selection.isSelected(row)"
+        class="hover:!bg-white/[0.02] transition-colors group !h-20"
       ></tr>
     </table>
+
 
     @if (!loading() && filteredCinemas().length === 0) {
       <div class="p-24 flex flex-col items-center justify-center text-slate-600">

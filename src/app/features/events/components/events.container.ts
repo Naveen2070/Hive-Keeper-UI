@@ -8,7 +8,7 @@ import { EventsViewComponent } from './events.view';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
-} from '../../cinemas/components/confirm-dialog.component';
+} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-events-container',
@@ -54,19 +54,51 @@ export class EventsContainerComponent implements OnInit {
   }
 
   onStatusChange(event: { id: number; status: EventStatus }) {
+    const eventItem = this.events().find((e) => e.id === event.id);
+    if (!eventItem) return;
+
+    const isPublish = event.status === 'PUBLISHED';
+    const isCancel = event.status === 'CANCELLED';
+
+    if (isPublish || isCancel) {
+      this.dialog
+        .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+          width: '400px',
+          panelClass: 'hive-dialog',
+          data: {
+            title: isPublish ? 'Force Publish Event?' : 'Force Cancel Event?',
+            message: isPublish
+              ? `You are about to force publish <strong>${eventItem.title}</strong>. This will make it visible to all users immediately.`
+              : `You are about to force cancel <strong>${eventItem.title}</strong>. This will notify all attendees and stop further bookings.`,
+            confirmLabel: isPublish ? 'Yes, publish' : 'Yes, cancel event',
+            confirmColor: isPublish ? 'approve' : 'reject',
+          },
+        })
+        .afterClosed()
+        .subscribe((confirmed) => {
+          if (confirmed) {
+            this.executeStatusUpdate(event.id, event.status);
+          }
+        });
+    } else {
+      this.executeStatusUpdate(event.id, event.status);
+    }
+  }
+
+  private executeStatusUpdate(id: number, status: EventStatus) {
     const previousEvents = this.events();
 
     // Optimistic UI Update
     this.events.update((current) =>
-      current.map((e) => (e.id === event.id ? { ...e, status: event.status } : e)),
+      current.map((e) => (e.id === id ? { ...e, status: status } : e)),
     );
 
     this.eventService
-      .updateStatus(event.id, event.status)
+      .updateStatus(id, status)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () =>
-          this.snackBar.open(`Event status updated to ${event.status}`, 'Dismiss', {
+          this.snackBar.open(`Event status updated to ${status}`, 'Dismiss', {
             duration: 3000,
           }),
         error: (err) => {

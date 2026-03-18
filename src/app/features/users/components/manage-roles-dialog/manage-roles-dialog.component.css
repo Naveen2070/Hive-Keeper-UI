@@ -1,0 +1,36 @@
+::ng-deep .hive-input .mat-mdc-text-field-wrapper {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  border-radius: 12px !important;
+}
+
+::ng-deep .hive-input .mdc-notched-outline__leading,
+::ng-deep .hive-input .mdc-notched-outline__notch,
+::ng-deep .hive-input .mdc-notched-outline__trailing {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+::ng-deep .hive-input:hover .mdc-notched-outline__leading,
+::ng-deep .hive-input:hover .mdc-notched-outline__notch,
+::ng-deep .hive-input:hover .mdc-notched-outline__trailing {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+::ng-deep .hive-input.mat-focused .mdc-notched-outline__leading,
+::ng-deep .hive-input.mat-focused .mdc-notched-outline__notch,
+::ng-deep .hive-input.mat-focused .mdc-notched-outline__trailing {
+  border-color: #a855f7 !important;
+  border-width: 1px !important;
+}
+
+::ng-deep .hive-input input,
+::ng-deep .hive-input .mat-mdc-select-value-text {
+  color: #f8fafc !important;
+}
+
+::ng-deep .hive-input .mdc-floating-label {
+  color: #94a3b8 !important;
+}
+
+::ng-deep .hive-input.mat-focused .mdc-floating-label {
+  color: #a855f7 !important;
+}

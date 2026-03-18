@@ -1,0 +1,91 @@
+<div class="p-7 bg-[#161a24] rounded-2xl border border-white/8 text-slate-200">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+      <mat-icon class="text-blue-500">person_add</mat-icon>
+    </div>
+    <div>
+      <h2 class="text-lg font-bold text-slate-50 m-0 leading-tight">Create Internal User</h2>
+      <p class="text-xs text-slate-400 m-0">Issue platform access and assign domains.</p>
+    </div>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="flex flex-col gap-4">
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" class="hive-input w-full">
+        <mat-label>Full Name</mat-label>
+        <input formControlName="fullName" matInput placeholder="e.g. Jane Doe" />
+        @if (form.get('fullName')?.hasError('required') && form.get('fullName')?.touched) {
+          <mat-error>Name is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="hive-input w-full">
+        <mat-label>Email Address</mat-label>
+        <input formControlName="email" matInput placeholder="jane@hive.com" type="email" />
+        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+          <mat-error>Email is required</mat-error>
+        }
+        @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+          <mat-error>Invalid email format</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="hive-input w-full">
+      <mat-label>Initial Password</mat-label>
+      <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" matInput
+             placeholder="Min 8 characters" />
+      <button (click)="hidePassword = !hidePassword" class="!text-slate-400" mat-icon-button matSuffix type="button">
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+        <mat-error>Password is required</mat-error>
+      }
+      @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+        <mat-error>Minimum 8 characters</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="p-4 rounded-xl border border-white/5 bg-white/[0.02]">
+      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+        <mat-icon class="!text-[18px] !w-[18px] !h-[18px] text-slate-400">shield</mat-icon>
+        Domain Access
+      </h3>
+
+      <div class="grid grid-cols-2 gap-4" formGroupName="domainRoles">
+        <mat-form-field appearance="outline" class="hive-input w-full">
+          <mat-label>Events Domain</mat-label>
+          <mat-select formControlName="events">
+            <mat-option value="NONE">None</mat-option>
+            <mat-option value="USER">User</mat-option>
+            <mat-option value="ORGANIZER">Organizer</mat-option>
+            <mat-option value="ADMIN">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="hive-input w-full">
+          <mat-label>Movies Domain</mat-label>
+          <mat-select formControlName="movies">
+            <mat-option value="NONE">None</mat-option>
+            <mat-option value="USER">User</mat-option>
+            <mat-option value="ORGANIZER">Organizer</mat-option>
+            <mat-option value="ADMIN">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <p class="text-[11px] text-amber-400/80 mt-1 pl-1">Note: SUPER_ADMIN can only be assigned directly via DB
+        script.</p>
+    </div>
+
+    <div class="flex justify-end gap-3 mt-4 pt-4 border-t border-white/5">
+      <button (click)="ref.close()" class="!border-white/10 !text-slate-300 hover:!bg-white/5 !rounded-lg px-6" mat-stroked-button
+              type="button">
+        Cancel
+      </button>
+      <button [disabled]="form.invalid" class="!bg-blue-600 hover:!bg-blue-500 !text-white !rounded-lg px-6 disabled:!bg-white/5 disabled:!text-slate-500" mat-flat-button
+              type="submit">
+        Create User
+      </button>
+    </div>
+  </form>
+</div>
