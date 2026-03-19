@@ -3,6 +3,7 @@ import { delay, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MOCK_AUTH_RESPONSE } from '../mocks/auth.mock';
 import { MOCK_CINEMAS } from '../mocks/cinema.mock';
+import { MOCK_EVENT_DASHBOARD_STATS, MOCK_MOVIE_DASHBOARD_STATS } from '../mocks/dashboard.mock';
 import { MOCK_EVENTS_PAGINATED } from '../mocks/event.mock';
 import { MOCK_USERS, MOCK_USERS_PAGINATED } from '../mocks/user.mock';
 
@@ -21,6 +22,16 @@ export const mockInterceptor: HttpInterceptorFn = (
     return of(new HttpResponse({ status: 200, body: MOCK_AUTH_RESPONSE })).pipe(
       delay(800), // Simulate network delay
     );
+  }
+
+  // Mock GET /api/dashboard/stats
+  if (url.endsWith('/dashboard/stats') && method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: MOCK_EVENT_DASHBOARD_STATS })).pipe(delay(500));
+  }
+
+  // Mock GET /api/movies/dashboard
+  if (url.endsWith('/movies/dashboard') && method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: MOCK_MOVIE_DASHBOARD_STATS })).pipe(delay(500));
   }
 
   // Mock GET /api/movies/cinemas
