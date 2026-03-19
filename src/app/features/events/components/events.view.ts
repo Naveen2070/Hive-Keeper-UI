@@ -31,6 +31,8 @@ export class EventsViewComponent {
 
   statusChange = output<{ id: number; status: EventStatus }>();
   deleteRequest = output<number>();
+  manageTiers = output<EventDTO>();
+  viewBookings = output<EventDTO>();
   refresh = output<void>();
 
   searchQuery = signal<string>('');

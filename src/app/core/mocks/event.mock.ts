@@ -12,7 +12,26 @@ export const MOCK_EVENTS: EventDTO[] = [
     priceRange: '$50 - $250',
     organizerId: 'org-1',
     organizerName: 'Echo Productions',
-    ticketTiers: [],
+    ticketTiers: [
+      {
+        id: 101,
+        name: 'Early Bird General Admission',
+        price: 50.00,
+        totalAllocation: 1000,
+        availableAllocation: 250,
+        validFrom: '2026-01-15T00:00:00',
+        validUntil: '2026-03-01T00:00:00',
+      },
+      {
+        id: 102,
+        name: 'VIP Experience',
+        price: 250.00,
+        totalAllocation: 200,
+        availableAllocation: 15,
+        validFrom: '2026-01-15T00:00:00',
+        validUntil: '2026-06-14T00:00:00',
+      }
+    ],
     createdAt: '2026-01-10T10:00:00Z',
   },
   {

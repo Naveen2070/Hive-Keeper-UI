@@ -2,6 +2,7 @@ import { HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponse } from '@an
 import { delay, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MOCK_AUTH_RESPONSE } from '../mocks/auth.mock';
+import { MOCK_BOOKINGS } from '../mocks/booking.mock';
 import { MOCK_CINEMAS } from '../mocks/cinema.mock';
 import { MOCK_EVENT_DASHBOARD_STATS, MOCK_MOVIE_DASHBOARD_STATS } from '../mocks/dashboard.mock';
 import { MOCK_EVENTS_PAGINATED } from '../mocks/event.mock';
@@ -57,6 +58,40 @@ export const mockInterceptor: HttpInterceptorFn = (
   // Mock DELETE /api/events/{id}
   if (url.includes('/events/') && method === 'DELETE') {
     return of(new HttpResponse({ status: 204 })).pipe(delay(500));
+  }
+
+  // --- Tier Mocks ---
+  
+  // Mock POST /api/tiers/events/{id}
+  if (url.includes('/tiers/events/') && method === 'POST') {
+    const newTier = { ...(req.body as any), id: Math.floor(Math.random() * 1000) };
+    return of(new HttpResponse({ status: 201, body: newTier })).pipe(delay(600));
+  }
+
+  // Mock PUT /api/tiers/{id}
+  if (url.includes('/tiers/') && !url.includes('/events/') && method === 'PUT') {
+    const updatedTier = { ...(req.body as any), id: parseInt(url.split('/').pop() || '0', 10) };
+    return of(new HttpResponse({ status: 200, body: updatedTier })).pipe(delay(500));
+  }
+
+  // Mock DELETE /api/tiers/{id}
+  if (url.includes('/tiers/') && !url.includes('/events/') && method === 'DELETE') {
+    return of(new HttpResponse({ status: 204 })).pipe(delay(500));
+  }
+
+  // --- Booking Mocks ---
+
+  // Mock GET /api/bookings/events/{id}
+  if (url.includes('/bookings/events/') && method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: MOCK_BOOKINGS })).pipe(delay(500));
+  }
+
+  // Mock PATCH /api/bookings/status/{id}
+  if (url.includes('/bookings/status/') && method === 'PATCH') {
+    const status = (req.body as any).status;
+    const bookingId = url.split('/').pop();
+    const updated = { ...MOCK_BOOKINGS[0], id: bookingId, status };
+    return of(new HttpResponse({ status: 200, body: updated })).pipe(delay(400));
   }
 
   // --- Identity Service Mocks ---

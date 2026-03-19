@@ -1,0 +1,40 @@
+import { BookingDTO } from '../../features/events/services/booking.service';
+
+export const MOCK_BOOKINGS: BookingDTO[] = [
+  {
+    id: 'bkg-1',
+    eventId: 1,
+    userId: 'usr-1',
+    userName: 'Alice Smith',
+    tierId: 101,
+    tierName: 'Early Bird General Admission',
+    quantity: 2,
+    totalPrice: 100.0,
+    status: 'CONFIRMED',
+    bookingDate: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    id: 'bkg-2',
+    eventId: 1,
+    userId: 'usr-2',
+    userName: 'Bob Johnson',
+    tierId: 102,
+    tierName: 'VIP Experience',
+    quantity: 1,
+    totalPrice: 250.0,
+    status: 'PENDING',
+    bookingDate: new Date(Date.now() - 3600000).toISOString(),
+  },
+  {
+    id: 'bkg-3',
+    eventId: 1,
+    userId: 'usr-3',
+    userName: 'Charlie Brown',
+    tierId: 101,
+    tierName: 'Early Bird General Admission',
+    quantity: 4,
+    totalPrice: 200.0,
+    status: 'CANCELLED',
+    bookingDate: new Date(Date.now() - 172800000).toISOString(),
+  },
+];

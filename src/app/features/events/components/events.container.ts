@@ -9,6 +9,8 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ManageTiersDialogComponent } from './manage-tiers-dialog/manage-tiers-dialog.component';
+import { BookingsDialogComponent } from './bookings-dialog/bookings-dialog.component';
 
 @Component({
   selector: 'app-events-container',
@@ -20,6 +22,8 @@ import {
       [loading]="loading()"
       (statusChange)="onStatusChange($event)"
       (deleteRequest)="onDelete($event)"
+      (manageTiers)="onManageTiers($event)"
+      (viewBookings)="onViewBookings($event)"
       (refresh)="loadEvents()"
     />
   `,
@@ -145,4 +149,28 @@ export class EventsContainerComponent implements OnInit {
         }
       });
   }
+
+  onManageTiers(event: EventDTO) {
+    const dialogRef = this.dialog.open(ManageTiersDialogComponent, {
+      panelClass: 'hive-dialog',
+      data: event,
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((updatedTiers) => {
+      if (updatedTiers) {
+        this.events.update((current) =>
+          current.map((e) => (e.id === event.id ? { ...e, ticketTiers: updatedTiers } : e)),
+        );
+      }
+    });
+  }
+
+  onViewBookings(event: EventDTO) {
+    this.dialog.open(BookingsDialogComponent, {
+      panelClass: 'hive-dialog',
+      data: event,
+    });
+  }
 }
+

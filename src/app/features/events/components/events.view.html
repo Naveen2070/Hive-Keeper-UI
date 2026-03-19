@@ -190,6 +190,15 @@
                 <span>Force Cancel</span>
               </button>
               <mat-divider class="!border-white/5"></mat-divider>
+              <button (click)="manageTiers.emit(e)" class="hover:!bg-white/5 !text-slate-300" mat-menu-item>
+                <mat-icon class="!text-blue-400">local_activity</mat-icon>
+                <span>Manage Tiers</span>
+              </button>
+              <button (click)="viewBookings.emit(e)" class="hover:!bg-white/5 !text-slate-300" mat-menu-item>
+                <mat-icon class="!text-indigo-400">receipt_long</mat-icon>
+                <span>View Bookings</span>
+              </button>
+              <mat-divider class="!border-white/5"></mat-divider>
               <button (click)="deleteRequest.emit(e.id)" class="hover:!bg-red-500/10 !text-red-400" mat-menu-item>
                 <mat-icon class="!text-red-400">delete_forever</mat-icon>
                 <span>Delete Event</span>

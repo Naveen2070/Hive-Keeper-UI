@@ -45,6 +45,7 @@ export interface PaginatedResponse<T> {
 export class EventService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/events`;
+  private readonly tiersUrl = `${environment.apiUrl}/tiers`;
 
   /**
    * Retrieves a paginated list of events.
@@ -68,5 +69,29 @@ export class EventService {
    */
   deleteEvent(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  /**
+   * Adds a new ticket tier to an event.
+   * Path: POST /api/tiers/events/{eventId}
+   */
+  addTier(eventId: number, tier: Omit<TicketTierDTO, 'id'>): Observable<TicketTierDTO> {
+    return this.http.post<TicketTierDTO>(`${this.tiersUrl}/events/${eventId}`, tier);
+  }
+
+  /**
+   * Updates an existing ticket tier.
+   * Path: PUT /api/tiers/{tierId}
+   */
+  updateTier(tierId: number, tier: Omit<TicketTierDTO, 'id'>): Observable<TicketTierDTO> {
+    return this.http.put<TicketTierDTO>(`${this.tiersUrl}/${tierId}`, tier);
+  }
+
+  /**
+   * Deletes a ticket tier.
+   * Path: DELETE /api/tiers/{tierId}
+   */
+  deleteTier(tierId: number): Observable<void> {
+    return this.http.delete<void>(`${this.tiersUrl}/${tierId}`);
   }
 }
