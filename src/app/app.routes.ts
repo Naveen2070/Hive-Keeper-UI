@@ -4,7 +4,7 @@ import { AdminLayoutContainerComponent } from './shared/components/layout/admin-
 
 export const routes: Routes = [
   {
-    path: 'login',
+    path: 'auth',
     loadChildren: () => import('./features/auth/routes').then((m) => m.AUTH_ROUTES),
   },
   {
